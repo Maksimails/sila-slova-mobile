@@ -1,12 +1,13 @@
 import { Redirect } from 'expo-router';
 
+import { LoadingScreen } from '@/components/loading-screen';
 import { useAuth } from '@/lib/auth-context';
 
 export default function Index() {
   const { session, isLoading } = useAuth();
 
   if (isLoading) {
-    return null;
+    return <LoadingScreen />;
   }
 
   // Always show the real landing page first — the (auth)/welcome screen
