@@ -1,12 +1,24 @@
 import { Redirect } from 'expo-router';
+import { useEffect, useState } from 'react';
 
 import { LoadingScreen } from '@/components/loading-screen';
 import { useAuth } from '@/lib/auth-context';
 
-export default function Index() {
-  const { session, isLoading } = useAuth();
+// A deliberate minimum splash beat, like a native app's launch screen —
+// without it, static web rendering paints the destination page instantly
+// and the loading screen never has a chance to be seen.
+const MIN_BOOT_MS = 900;
 
-  if (isLoading) {
+export default function Index() {
+  const { session, isLoading: isAuthLoading } = useAuth();
+  const [bootDelayDone, setBootDelayDone] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setBootDelayDone(true), MIN_BOOT_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isAuthLoading || !bootDelayDone) {
     return <LoadingScreen />;
   }
 
