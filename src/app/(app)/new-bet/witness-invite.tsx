@@ -33,7 +33,7 @@ export default function WitnessInviteScreen() {
         <Image source={{ uri: QR_URL }} style={styles.qr} contentFit="contain" />
 
         <Button title="Поделиться ссылкой" onPress={handleShare} />
-        <Button title="Готово" variant="secondary" onPress={() => router.replace('/(app)')} />
+        <Button title="Готово" variant="secondary" onPress={() => router.replace('/')} />
       </SafeAreaView>
     </ThemedView>
   );

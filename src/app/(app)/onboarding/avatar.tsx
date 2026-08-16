@@ -28,7 +28,7 @@ export default function AvatarScreen() {
   };
 
   const handleDone = () => {
-    router.replace('/(app)');
+    router.replace('/');
   };
 
   return (

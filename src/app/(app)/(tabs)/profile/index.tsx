@@ -1,14 +1,18 @@
 import { router } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { BetPostCard } from '@/components/bet-post-card';
+import { BetGridTile } from '@/components/bet-grid-tile';
 import { StatCard } from '@/components/stat-card';
 import { StatusPill } from '@/components/status-pill';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { MOCK_BETS, MOCK_FOLLOWERS, MOCK_FOLLOWING, MOCK_REPORTS } from '@/lib/mock-data';
+
+const GRID_COLUMNS = 3;
+const GRID_GAP = Spacing.half;
 
 const MOCK_PROFILE = {
   name: 'Максим',
@@ -27,6 +31,12 @@ const TYPE_LABELS = { result: 'Результат', habit: 'Привычка', q
 
 export default function ProfileScreen() {
   const p = MOCK_PROFILE;
+  const [gridWidth, setGridWidth] = useState(0);
+  const onGridLayout = (e: LayoutChangeEvent) => {
+    const w = e.nativeEvent.layout.width;
+    if (w > 0 && w !== gridWidth) setGridWidth(w);
+  };
+  const tileSize = gridWidth > 0 ? (gridWidth - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS : 0;
 
   const finishedBets = MOCK_BETS.filter((b) => b.status === 'done' || b.status === 'failed').sort(
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
@@ -110,20 +120,23 @@ export default function ProfileScreen() {
               <ThemedText type="label" color="textSecondary">
                 Ставки
               </ThemedText>
-              {betsWithReports.map((bet) => {
-                const betReports = MOCK_REPORTS.filter((r) => r.betId === bet.id);
-                const cover = [...betReports].reverse().find((r) => r.mediaUrl)?.mediaUrl;
-                return (
-                  <BetPostCard
-                    key={bet.id}
-                    bet={bet}
-                    coverUrl={cover}
-                    reportsCount={betReports.length}
-                    onPress={() => router.push(`/bet/${bet.id}`)}
-                    onComment={() => router.push(`/bet/${bet.id}/comments`)}
-                  />
-                );
-              })}
+              <View style={styles.grid} onLayout={onGridLayout}>
+                {tileSize > 0
+                  ? betsWithReports.map((bet) => {
+                      const betReports = MOCK_REPORTS.filter((r) => r.betId === bet.id);
+                      const cover = [...betReports].reverse().find((r) => r.mediaUrl)?.mediaUrl;
+                      return (
+                        <BetGridTile
+                          key={bet.id}
+                          bet={bet}
+                          coverUrl={cover}
+                          size={tileSize}
+                          onPress={() => router.push(`/bet/${bet.id}`)}
+                        />
+                      );
+                    })
+                  : null}
+              </View>
             </View>
           ) : null}
 
@@ -165,6 +178,12 @@ export default function ProfileScreen() {
           </Pressable>
           <Pressable onPress={() => router.push('/settings/account')} style={[styles.linkRow, styles.signOut]}>
             <ThemedText type="body">⚙️ Настройки и аккаунт</ThemedText>
+            <ThemedText type="small" color="textSecondary">
+              →
+            </ThemedText>
+          </Pressable>
+          <Pressable onPress={() => router.push('/dev-menu')} style={styles.linkRow}>
+            <ThemedText type="body">🛠 Все экраны (QA)</ThemedText>
             <ThemedText type="small" color="textSecondary">
               →
             </ThemedText>
@@ -233,6 +252,11 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: Spacing.two,
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: GRID_GAP,
   },
   sectionHeaderRow: {
     flexDirection: 'row',

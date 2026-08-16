@@ -31,7 +31,7 @@ export default function WitnessAcceptScreen() {
               Раз в неделю мы спросим тебя, держится ли {req.requesterName}.
             </ThemedText>
           ) : null}
-          <Button title="На главную" onPress={() => router.replace('/(app)')} />
+          <Button title="На главную" onPress={() => router.replace('/')} />
         </SafeAreaView>
       </ThemedView>
     );

@@ -34,9 +34,10 @@ const SECTIONS: { title: string; data: Row[] }[] = [
   {
     title: 'Главный экран',
     data: [
-      { label: 'Список ставок', href: '/(app)' },
+      { label: 'Лента', href: '/' },
+      { label: 'Открытые вызовы', href: '/discover' },
       { label: 'Уведомления', href: '/notifications' },
-      { label: 'Лента', href: '/feed' },
+      { label: 'Профиль другого пользователя', href: { pathname: '/person/[id]', params: { id: '3' } } },
     ],
   },
   {

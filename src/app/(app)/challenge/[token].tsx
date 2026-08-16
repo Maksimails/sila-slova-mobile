@@ -28,7 +28,7 @@ export default function ChallengeInviteScreen() {
           <ThemedText type="title" style={styles.center}>
             Вызов отклонён
           </ThemedText>
-          <Button title="На главную" onPress={() => router.replace('/(app)')} />
+          <Button title="На главную" onPress={() => router.replace('/')} />
         </SafeAreaView>
       </ThemedView>
     );
