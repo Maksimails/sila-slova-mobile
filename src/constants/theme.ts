@@ -1,55 +1,40 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-import '@/global.css';
-
 import { Platform } from 'react-native';
 
+/**
+ * Light, black-and-white base with gold used sparingly as the one accent —
+ * Forfeit/Apple direction, not the old dark Duel palette (see git history
+ * for that version if it's ever needed again).
+ */
 export const Colors = {
-  light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-  },
+  bg: '#ffffff',
+  bgElement: '#f5f5f6',
+  bgSelected: '#ececed',
+  text: '#111113',
+  textSecondary: '#6c6f78',
+  gold: '#b8860f',
+  goldSoft: '#f7ecd3',
+  crimson: '#c0392f',
+  teal: '#1f8f6c',
+  line: '#e3e3e5',
 } as const;
 
-export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
+export type ThemeColor = keyof typeof Colors;
 
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
-  },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
-  web: {
-    sans: 'var(--font-display)',
-    serif: 'var(--font-serif)',
-    rounded: 'var(--font-rounded)',
-    mono: 'var(--font-mono)',
-  },
-});
+/**
+ * Native system "rounded" font design — ships with the OS, no license to
+ * manage. iOS: San Francisco Rounded via the `ui-rounded` design token.
+ * Android: the "sans-serif-rounded" system alias. Weight is set per-Text via
+ * fontWeight, same family throughout.
+ */
+export const Fonts = {
+  rounded:
+    Platform.select({
+      ios: 'ui-rounded',
+      android: 'sans-serif-rounded',
+      default: 'system-ui',
+    }) ?? 'System',
+  mono: 'ui-monospace',
+} as const;
 
 export const Spacing = {
   half: 2,
@@ -61,5 +46,11 @@ export const Spacing = {
   six: 64,
 } as const;
 
-export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
-export const MaxContentWidth = 800;
+export const Radius = {
+  small: 10,
+  medium: 16,
+  large: 26,
+  pill: 999,
+} as const;
+
+export const MaxContentWidth = 480;
