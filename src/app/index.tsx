@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/auth-context';
 // A deliberate minimum splash beat, like a native app's launch screen —
 // without it, static web rendering paints the destination page instantly
 // and the loading screen never has a chance to be seen.
-const MIN_BOOT_MS = 900;
+const MIN_BOOT_MS = 1400;
 
 export default function Index() {
   const { session, isLoading: isAuthLoading } = useAuth();
