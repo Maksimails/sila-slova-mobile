@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -18,7 +19,7 @@ export function CheckboxRow({ label, checked, onToggle }: CheckboxRowProps) {
       style={styles.row}
     >
       <View style={[styles.box, checked && styles.boxChecked]}>
-        {checked ? <ThemedText type="small" color="bg">✓</ThemedText> : null}
+        {checked ? <Ionicons name="checkmark" size={14} color={Colors.bg} /> : null}
       </View>
       <ThemedText type="small" color="textSecondary" style={styles.label}>
         {label}

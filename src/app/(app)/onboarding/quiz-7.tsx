@@ -4,9 +4,9 @@ import { QuizStep } from '@/components/quiz-step';
 import { useOnboarding } from '@/lib/onboarding-context';
 
 const OPTIONS = [
-  { value: 'human', label: 'Человек — живой свидетель' },
-  { value: 'ai', label: 'ИИ — быстро и без эмоций' },
-  { value: 'either', label: 'Всё равно, главное честно' },
+  { value: 'human', label: 'Человек — живой свидетель', icon: 'person-outline' },
+  { value: 'ai', label: 'ИИ — быстро и без эмоций', icon: 'hardware-chip-outline' },
+  { value: 'either', label: 'Всё равно, главное честно', icon: 'thumbs-up-outline' },
 ] as const;
 
 export default function Quiz7Screen() {

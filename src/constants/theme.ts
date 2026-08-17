@@ -16,9 +16,31 @@ export const Colors = {
   crimson: '#c0392f',
   teal: '#1f8f6c',
   line: '#e3e3e5',
+  screenDark: '#0E0E10',
+  textOnDark: 'rgba(255,255,255,0.55)',
 } as const;
 
 export type ThemeColor = keyof typeof Colors;
+
+/**
+ * Bright diagonal gradients — the "Unleash" shop-tile language forked into
+ * this app: vivid at the top-left, deep/dark of the same hue at the
+ * bottom-right. Used for quiz answers, bet circles, and anywhere a page
+ * needs a jolt of color against the white base.
+ */
+export const Gradients = {
+  orange: ['#FF9142', '#8B3A0E'],
+  gold: ['#FFD84D', '#8A6100'],
+  teal: ['#33E6A0', '#0B3D2E'],
+  purple: ['#B968FF', '#3D1466'],
+  red: ['#FF5C5C', '#7A0E0E'],
+  blue: ['#4DA3FF', '#0B2E66'],
+  pink: ['#FF7AC6', '#5E0B3D'],
+  cyan: ['#33D9E6', '#0B4D66'],
+} as const;
+
+export type GradientName = keyof typeof Gradients;
+export const GradientOrder: GradientName[] = ['orange', 'teal', 'purple', 'gold', 'pink', 'blue', 'red', 'cyan'];
 
 /**
  * Native system "rounded" font design — ships with the OS, no license to

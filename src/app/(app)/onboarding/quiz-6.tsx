@@ -4,10 +4,10 @@ import { QuizStep } from '@/components/quiz-step';
 import { useOnboarding } from '@/lib/onboarding-context';
 
 const OPTIONS = [
-  { value: 'always', label: 'Только когда уже поздно откладывать' },
-  { value: 'often', label: 'Обычно в последний момент' },
-  { value: 'sometimes', label: 'Иногда заранее, иногда впритык' },
-  { value: 'never', label: 'Начинаю сразу, без дедлайна' },
+  { value: 'always', label: 'Только когда уже поздно откладывать', icon: 'hourglass-outline' },
+  { value: 'often', label: 'Обычно в последний момент', icon: 'timer-outline' },
+  { value: 'sometimes', label: 'Иногда заранее, иногда впритык', icon: 'shuffle-outline' },
+  { value: 'never', label: 'Начинаю сразу, без дедлайна', icon: 'rocket-outline' },
 ] as const;
 
 export default function Quiz6Screen() {

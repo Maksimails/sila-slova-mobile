@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -38,9 +39,18 @@ export default function BetDetailScreen() {
                 </ThemedText>
               ) : null}
               {bet.stake > 0 ? (
-                <ThemedText type="body" color="gold">
-                  Ставка: {bet.stake} {bet.currency === 'RUB' ? '₽' : '⭐'}
-                </ThemedText>
+                <View style={styles.stakeRow}>
+                  <ThemedText type="body" color="gold">
+                    Ставка: {bet.stake}
+                  </ThemedText>
+                  {bet.currency === 'RUB' ? (
+                    <ThemedText type="body" color="gold">
+                      ₽
+                    </ThemedText>
+                  ) : (
+                    <Ionicons name="star" size={16} color={Colors.gold} />
+                  )}
+                </View>
               ) : null}
 
               {bet.status === 'active' && !bet.reportedToday ? (
@@ -51,9 +61,10 @@ export default function BetDetailScreen() {
                 />
               ) : null}
 
-              <Pressable onPress={() => router.push(`/bet/${bet.id}/comments?day=0`)}>
+              <Pressable onPress={() => router.push(`/bet/${bet.id}/comments?day=0`)} style={styles.commentLink}>
+                <Ionicons name="chatbubble-outline" size={16} color={Colors.gold} />
                 <ThemedText type="small" color="gold">
-                  💬 комментарии к видео-клятве
+                  комментарии к видео-клятве
                 </ThemedText>
               </Pressable>
 
@@ -74,9 +85,13 @@ export default function BetDetailScreen() {
                 <Image source={{ uri: item.mediaUrl }} style={styles.reportImage} />
               ) : null}
               {item.content ? <ThemedText type="body">{item.content}</ThemedText> : null}
-              <Pressable onPress={() => router.push(`/bet/${bet.id}/comments?day=${item.day}`)}>
+              <Pressable
+                onPress={() => router.push(`/bet/${bet.id}/comments?day=${item.day}`)}
+                style={styles.commentLink}
+              >
+                <Ionicons name="chatbubble-outline" size={16} color={Colors.gold} />
                 <ThemedText type="small" color="gold">
-                  💬 комментарии
+                  комментарии
                 </ThemedText>
               </Pressable>
             </View>
@@ -116,6 +131,16 @@ const styles = StyleSheet.create({
   },
   reportButton: {
     marginTop: Spacing.two,
+  },
+  stakeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
+  },
+  commentLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
   },
   historyTitle: {
     marginTop: Spacing.three,

@@ -1,15 +1,38 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Tabs } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { FloatingActionButton } from '@/components/floating-action-button';
-import { ThemedText } from '@/components/themed-text';
-import { Colors } from '@/constants/theme';
+import { Gradients, Radius, type GradientName } from '@/constants/theme';
 
-function TabIcon({ glyph, focused }: { glyph: string; focused: boolean }) {
+const TAB_DARK = '#141416';
+
+function TabIcon({
+  name,
+  focused,
+  gradient,
+}: {
+  name: keyof typeof Ionicons.glyphMap;
+  focused: boolean;
+  gradient: GradientName;
+}) {
+  if (focused) {
+    return (
+      <LinearGradient
+        colors={Gradients[gradient]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.iconChip}
+      >
+        <Ionicons name={name} size={18} color="#ffffff" />
+      </LinearGradient>
+    );
+  }
   return (
-    <ThemedText type="subtitle" style={{ opacity: focused ? 1 : 0.4 }}>
-      {glyph}
-    </ThemedText>
+    <View style={styles.iconChip}>
+      <Ionicons name={name} size={18} color="rgba(255,255,255,0.45)" />
+    </View>
   );
 }
 
@@ -19,8 +42,8 @@ export default function TabsLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: Colors.text,
-          tabBarInactiveTintColor: Colors.textSecondary,
+          tabBarActiveTintColor: '#ffffff',
+          tabBarInactiveTintColor: 'rgba(255,255,255,0.45)',
           tabBarStyle: styles.tabBar,
           tabBarLabelStyle: styles.tabBarLabel,
           tabBarShowLabel: true,
@@ -30,21 +53,21 @@ export default function TabsLayout() {
           name="index"
           options={{
             title: 'Лента',
-            tabBarIcon: ({ focused }) => <TabIcon glyph="◎" focused={focused} />,
+            tabBarIcon: ({ focused }) => <TabIcon name="albums-outline" focused={focused} gradient="blue" />,
           }}
         />
         <Tabs.Screen
           name="discover"
           options={{
             title: 'Открытые',
-            tabBarIcon: ({ focused }) => <TabIcon glyph="✦" focused={focused} />,
+            tabBarIcon: ({ focused }) => <TabIcon name="compass-outline" focused={focused} gradient="purple" />,
           }}
         />
         <Tabs.Screen
           name="profile"
           options={{
             title: 'Профиль',
-            tabBarIcon: ({ focused }) => <TabIcon glyph="●" focused={focused} />,
+            tabBarIcon: ({ focused }) => <TabIcon name="person-outline" focused={focused} gradient="orange" />,
           }}
         />
       </Tabs>
@@ -58,13 +81,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    backgroundColor: Colors.bg,
-    borderTopColor: Colors.line,
+    backgroundColor: TAB_DARK,
+    borderTopWidth: 0,
     height: 84,
-    paddingTop: 8,
+    paddingTop: 10,
   },
   tabBarLabel: {
     fontSize: 11,
     fontWeight: '600',
+    marginTop: 2,
+  },
+  iconChip: {
+    width: 36,
+    height: 36,
+    borderRadius: Radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

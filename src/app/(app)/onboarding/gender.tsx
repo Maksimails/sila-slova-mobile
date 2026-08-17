@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 
-import { OptionCard } from '@/components/option-card';
+import { GradientTile } from '@/components/gradient-tile';
 import { WizardScreen } from '@/components/wizard-screen';
 import { type Gender, useOnboarding } from '@/lib/onboarding-context';
 
@@ -21,8 +21,20 @@ export default function GenderScreen() {
       onNext={handleNext}
       nextDisabled={!draft.gender}
     >
-      <OptionCard title="Я мужчина" selected={draft.gender === 'm'} onPress={() => choose('m')} />
-      <OptionCard title="Я женщина" selected={draft.gender === 'f'} onPress={() => choose('f')} />
+      <GradientTile
+        gradient="blue"
+        icon="man-outline"
+        label="Я мужчина"
+        selected={draft.gender === 'm'}
+        onPress={() => choose('m')}
+      />
+      <GradientTile
+        gradient="pink"
+        icon="woman-outline"
+        label="Я женщина"
+        selected={draft.gender === 'f'}
+        onPress={() => choose('f')}
+      />
     </WizardScreen>
   );
 }

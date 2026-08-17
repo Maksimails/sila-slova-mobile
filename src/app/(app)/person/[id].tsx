@@ -1,18 +1,16 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { BetGridTile } from '@/components/bet-grid-tile';
+import { BetCircle } from '@/components/bet-circle';
 import { Button } from '@/components/button';
-import { StatCard } from '@/components/stat-card';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, Radius, Spacing } from '@/constants/theme';
+import { Colors, GradientOrder, Gradients, Radius, Spacing } from '@/constants/theme';
 import { MOCK_OTHER_BETS, MOCK_OTHER_REPORTS, MOCK_PEOPLE } from '@/lib/mock-data';
-
-const GRID_COLUMNS = 3;
-const GRID_GAP = Spacing.half;
 
 export default function PersonProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -22,12 +20,6 @@ export default function PersonProfileScreen() {
   );
 
   const [isFollowing, setIsFollowing] = useState(false);
-  const [gridWidth, setGridWidth] = useState(0);
-  const onGridLayout = (e: LayoutChangeEvent) => {
-    const w = e.nativeEvent.layout.width;
-    if (w > 0 && w !== gridWidth) setGridWidth(w);
-  };
-  const tileSize = gridWidth > 0 ? (gridWidth - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS : 0;
 
   if (!person) {
     return (
@@ -41,19 +33,27 @@ export default function PersonProfileScreen() {
     );
   }
 
+  const gradient = GradientOrder[person.id % GradientOrder.length];
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <Pressable onPress={() => router.back()} style={styles.back}>
-          <ThemedText type="subtitle">← Назад</ThemedText>
+          <Ionicons name="chevron-back" size={20} color={Colors.text} />
+          <ThemedText type="subtitle">Назад</ThemedText>
         </Pressable>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
-            <View style={styles.avatarPlaceholder}>
-              <ThemedText type="title" color="gold">
+            <LinearGradient
+              colors={Gradients[gradient]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.avatar}
+            >
+              <ThemedText type="display" color="bg">
                 {person.name.slice(0, 1)}
               </ThemedText>
-            </View>
+            </LinearGradient>
             <ThemedText type="title">{person.name}</ThemedText>
           </View>
 
@@ -78,7 +78,13 @@ export default function PersonProfileScreen() {
             </View>
           </View>
 
-          <StatCard label="Доверие" value={`${person.trustLevel}%`} progress={person.trustLevel / 100} />
+          <View style={styles.pillRow}>
+            <LinearGradient colors={Gradients.orange} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.pill}>
+              <ThemedText type="small" color="bg">
+                Доверие {person.trustLevel}%
+              </ThemedText>
+            </LinearGradient>
+          </View>
 
           <Button
             title={isFollowing ? 'Вы подписаны' : 'Подписаться'}
@@ -91,23 +97,24 @@ export default function PersonProfileScreen() {
               <ThemedText type="label" color="textSecondary">
                 Ставки
               </ThemedText>
-              <View style={styles.grid} onLayout={onGridLayout}>
-                {tileSize > 0
-                  ? bets.map((bet) => {
-                      const betReports = MOCK_OTHER_REPORTS.filter((r) => r.betId === bet.id);
-                      const cover = [...betReports].reverse().find((r) => r.mediaUrl)?.mediaUrl;
-                      return (
-                        <BetGridTile
-                          key={bet.id}
-                          bet={bet}
-                          coverUrl={cover}
-                          size={tileSize}
-                          onPress={() => router.push(`/bet/${bet.id}`)}
-                        />
-                      );
-                    })
-                  : null}
-              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.circleRow}
+              >
+                {bets.map((bet) => {
+                  const betReports = MOCK_OTHER_REPORTS.filter((r) => r.betId === bet.id);
+                  const cover = [...betReports].reverse().find((r) => r.mediaUrl)?.mediaUrl;
+                  return (
+                    <BetCircle
+                      key={bet.id}
+                      bet={bet}
+                      coverUrl={cover}
+                      onPress={() => router.push(`/bet/${bet.id}`)}
+                    />
+                  );
+                })}
+              </ScrollView>
             </View>
           ) : (
             <ThemedText type="small" color="textSecondary">
@@ -129,6 +136,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
   },
   back: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingTop: Spacing.three,
     paddingBottom: Spacing.one,
   },
@@ -142,35 +151,39 @@ const styles = StyleSheet.create({
     gap: Spacing.one,
     marginBottom: Spacing.two,
   },
-  avatarPlaceholder: {
-    width: 88,
-    height: 88,
+  avatar: {
+    width: 96,
+    height: 96,
     borderRadius: Radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Colors.line,
     marginBottom: Spacing.two,
   },
   followRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    borderRadius: Radius.large,
-    borderWidth: 1,
-    borderColor: Colors.line,
-    backgroundColor: Colors.bgElement,
     paddingVertical: Spacing.three,
   },
   followStat: {
     alignItems: 'center',
     gap: 2,
   },
+  pillRow: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+  },
+  pill: {
+    flex: 1,
+    borderRadius: Radius.pill,
+    paddingVertical: Spacing.two,
+    alignItems: 'center',
+  },
   section: {
     gap: Spacing.two,
   },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: GRID_GAP,
+  circleRow: {
+    gap: Spacing.three,
+    paddingVertical: Spacing.one,
+    paddingRight: Spacing.three,
   },
 });

@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,12 +15,12 @@ const MOCK_NOTIFICATIONS: { id: number; type: NotificationType; message: string;
   { id: 3, type: 'challenge_accepted', message: 'Игорь принял твой вызов «30 отжиманий каждый день»', isRead: true },
 ];
 
-const ICONS: Record<NotificationType, string> = {
-  comment: '💬',
-  opponent_report: '⚔️',
-  challenge_activated: '🔥',
-  challenge_accepted: '✅',
-  challenge_declined: '✖️',
+const ICONS: Record<NotificationType, keyof typeof Ionicons.glyphMap> = {
+  comment: 'chatbubble-outline',
+  opponent_report: 'flash-outline',
+  challenge_activated: 'flame-outline',
+  challenge_accepted: 'checkmark-circle-outline',
+  challenge_declined: 'close-circle-outline',
 };
 
 export default function NotificationsScreen() {
@@ -38,7 +39,7 @@ export default function NotificationsScreen() {
               onPress={() => (item.betId ? router.push(`/bet/${item.betId}`) : undefined)}
               style={[styles.row, !item.isRead && styles.rowUnread]}
             >
-              <ThemedText type="subtitle">{ICONS[item.type]}</ThemedText>
+              <Ionicons name={ICONS[item.type]} size={22} color={Colors.text} />
               <ThemedText type="body" style={styles.message}>
                 {item.message}
               </ThemedText>

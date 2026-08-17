@@ -4,10 +4,10 @@ import { QuizStep } from '@/components/quiz-step';
 import { useOnboarding } from '@/lib/onboarding-context';
 
 const OPTIONS = [
-  { value: 'trivial', label: 'Забуду через час' },
-  { value: 'unpleasant', label: 'Кольнёт, но переживу' },
-  { value: 'selfRespect', label: 'Перестаю себе доверять' },
-  { value: 'worst', label: 'Это предательство себя' },
+  { value: 'trivial', label: 'Забуду через час', icon: 'time-outline' },
+  { value: 'unpleasant', label: 'Кольнёт, но переживу', icon: 'alert-circle-outline' },
+  { value: 'selfRespect', label: 'Перестаю себе доверять', icon: 'trending-down-outline' },
+  { value: 'worst', label: 'Это предательство себя', icon: 'heart-dislike-outline' },
 ] as const;
 
 export default function Quiz1Screen() {

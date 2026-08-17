@@ -24,7 +24,7 @@ export default function WitnessAcceptScreen() {
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.centered}>
           <ThemedText type="title" style={styles.center}>
-            {decision === 'accepted' ? 'Свидетель подтверждён ✅' : 'Ты отказался(-ась)'}
+            {decision === 'accepted' ? 'Свидетель подтверждён' : 'Ты отказался(-ась)'}
           </ThemedText>
           {decision === 'accepted' ? (
             <ThemedText type="body" color="textSecondary" style={styles.center}>

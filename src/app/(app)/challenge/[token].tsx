@@ -39,7 +39,7 @@ export default function ChallengeInviteScreen() {
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.centered}>
           <ThemedText type="title" style={styles.center}>
-            ⚔️ Вызов принят!
+            Вызов принят!
           </ThemedText>
           <ThemedText type="body" color="textSecondary" style={styles.center}>
             Осталось записать свою видео-клятву.

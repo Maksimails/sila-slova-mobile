@@ -4,10 +4,10 @@ import { QuizStep } from '@/components/quiz-step';
 import { useOnboarding } from '@/lib/onboarding-context';
 
 const OPTIONS = [
-  { value: 'always', label: 'Расслабляюсь и забиваю' },
-  { value: 'often', label: 'Держусь первое время, потом сдуваюсь' },
-  { value: 'sometimes', label: 'Справляюсь, но через силу' },
-  { value: 'never', label: 'Не важно, видит кто-то или нет' },
+  { value: 'always', label: 'Расслабляюсь и забиваю', icon: 'moon-outline' },
+  { value: 'often', label: 'Держусь первое время, потом сдуваюсь', icon: 'trending-down-outline' },
+  { value: 'sometimes', label: 'Справляюсь, но через силу', icon: 'barbell-outline' },
+  { value: 'never', label: 'Не важно, видит кто-то или нет', icon: 'leaf-outline' },
 ] as const;
 
 export default function Quiz3Screen() {

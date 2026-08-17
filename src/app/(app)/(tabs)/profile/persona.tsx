@@ -21,7 +21,7 @@ export default function PersonaPickerScreen() {
         {PERSONAS.map((persona) => (
           <OptionCard
             key={persona.key}
-            title={persona.nsfw ? `${persona.name} 🔞` : persona.name}
+            title={persona.nsfw ? `${persona.name} (18+)` : persona.name}
             description={persona.voice}
             selected={selected === persona.key}
             onPress={() => setSelected(persona.key)}

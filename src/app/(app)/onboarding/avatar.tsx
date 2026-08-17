@@ -1,5 +1,6 @@
-import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, Radius, Spacing } from '@/constants/theme';
+import { Gradients, Radius, Spacing } from '@/constants/theme';
 import { useOnboarding } from '@/lib/onboarding-context';
 
 export default function AvatarScreen() {
@@ -43,11 +44,16 @@ export default function AvatarScreen() {
           {draft.avatarUri ? (
             <Image source={{ uri: draft.avatarUri }} style={styles.avatarImage} />
           ) : (
-            <ThemedView bg="bgElement" style={styles.avatarPlaceholder}>
-              <ThemedText type="display" color="gold">
+            <LinearGradient
+              colors={Gradients.orange}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.avatarPlaceholder}
+            >
+              <ThemedText type="display" color="bg">
                 {initials}
               </ThemedText>
-            </ThemedView>
+            </LinearGradient>
           )}
         </ThemedView>
 
@@ -82,7 +88,5 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Colors.line,
   },
 });

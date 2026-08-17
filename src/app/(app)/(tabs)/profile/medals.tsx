@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -31,7 +32,11 @@ export default function MedalsScreen() {
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
             <View style={[styles.medal, !item.earned && styles.medalLocked]}>
-              <ThemedText type="display">{item.earned ? '🏅' : '🔒'}</ThemedText>
+              <Ionicons
+                name={item.earned ? 'medal-outline' : 'lock-closed-outline'}
+                size={34}
+                color={item.earned ? Colors.gold : Colors.textSecondary}
+              />
               <ThemedText type="small" color={item.earned ? 'text' : 'textSecondary'} style={styles.medalName}>
                 {item.name}
               </ThemedText>

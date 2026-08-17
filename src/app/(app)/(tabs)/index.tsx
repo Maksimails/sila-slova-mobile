@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -11,7 +12,11 @@ import { MOCK_FEED_ITEMS, MOCK_OTHER_BETS, MOCK_OTHER_REPORTS, MOCK_PEOPLE } fro
 const TYPE_LABELS = { result: 'Результат', habit: 'Привычка', quit: 'Аскеза' } as const;
 
 type Reaction = 'stars' | 'biceps' | 'hearts';
-const REACTION_GLYPHS: Record<Reaction, string> = { stars: '⭐', biceps: '💪', hearts: '❤️' };
+const REACTION_ICONS: Record<Reaction, { name: keyof typeof Ionicons.glyphMap; activeName: keyof typeof Ionicons.glyphMap; color: string }> = {
+  stars: { name: 'star-outline', activeName: 'star', color: '#FFD84D' },
+  biceps: { name: 'barbell-outline', activeName: 'barbell', color: '#FF9142' },
+  hearts: { name: 'heart-outline', activeName: 'heart', color: '#FF5C5C' },
+};
 
 function FeedCard({ item, height }: { item: (typeof MOCK_FEED_ITEMS)[number]; height: number }) {
   const person = MOCK_PEOPLE.find((p) => p.id === item.personId);
@@ -72,29 +77,31 @@ function FeedCard({ item, height }: { item: (typeof MOCK_FEED_ITEMS)[number]; he
       </Pressable>
 
       <View style={styles.rail}>
-        {(Object.keys(REACTION_GLYPHS) as Reaction[]).map((reaction) => (
-          <Pressable
-            key={reaction}
-            accessibilityRole="button"
-            hitSlop={8}
-            onPress={() => toggleReaction(reaction)}
-            style={styles.railButton}
-          >
-            <ThemedText type="subtitle" style={myReaction === reaction && styles.railActive}>
-              {REACTION_GLYPHS[reaction]}
-            </ThemedText>
-            <ThemedText type="small" color="bg">
-              {counts[reaction]}
-            </ThemedText>
-          </Pressable>
-        ))}
+        {(Object.keys(REACTION_ICONS) as Reaction[]).map((reaction) => {
+          const isActive = myReaction === reaction;
+          const meta = REACTION_ICONS[reaction];
+          return (
+            <Pressable
+              key={reaction}
+              accessibilityRole="button"
+              hitSlop={8}
+              onPress={() => toggleReaction(reaction)}
+              style={[styles.railButton, isActive && styles.railActive]}
+            >
+              <Ionicons name={isActive ? meta.activeName : meta.name} size={26} color={isActive ? meta.color : '#ffffff'} />
+              <ThemedText type="small" color="bg">
+                {counts[reaction]}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
         <Pressable
           accessibilityRole="button"
           hitSlop={8}
           onPress={() => router.push(`/bet/${bet.id}/comments`)}
           style={styles.railButton}
         >
-          <ThemedText type="subtitle">💬</ThemedText>
+          <Ionicons name="chatbubble-outline" size={24} color="#ffffff" />
           <ThemedText type="small" color="bg">
             {bet.commentsCount ?? 0}
           </ThemedText>

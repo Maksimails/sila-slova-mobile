@@ -4,10 +4,10 @@ import { QuizStep } from '@/components/quiz-step';
 import { useOnboarding } from '@/lib/onboarding-context';
 
 const OPTIONS = [
-  { value: 'always', label: 'Да, это единственное, что реально работает' },
-  { value: 'often', label: 'Обычно да, стыдно облажаться на глазах' },
-  { value: 'sometimes', label: 'Иногда помогает, иногда давит' },
-  { value: 'never', label: 'Нет, справляюсь сам(-а)' },
+  { value: 'always', label: 'Да, это единственное, что реально работает', icon: 'people-outline' },
+  { value: 'often', label: 'Обычно да, стыдно облажаться на глазах', icon: 'alert-circle-outline' },
+  { value: 'sometimes', label: 'Иногда помогает, иногда давит', icon: 'swap-horizontal-outline' },
+  { value: 'never', label: 'Нет, справляюсь сам(-а)', icon: 'walk-outline' },
 ] as const;
 
 export default function Quiz5Screen() {

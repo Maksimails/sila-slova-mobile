@@ -4,12 +4,12 @@ import { QuizStep } from '@/components/quiz-step';
 import { useOnboarding } from '@/lib/onboarding-context';
 
 const OPTIONS = [
-  { value: 'Друг', label: 'Друг' },
-  { value: 'Telegram', label: 'Telegram' },
-  { value: 'Instagram', label: 'Instagram' },
-  { value: 'TikTok', label: 'TikTok' },
-  { value: 'Google', label: 'Google' },
-  { value: 'Другое', label: 'Другое' },
+  { value: 'Друг', label: 'Друг', icon: 'people-outline' },
+  { value: 'Telegram', label: 'Telegram', icon: 'paper-plane-outline' },
+  { value: 'Instagram', label: 'Instagram', icon: 'camera-outline' },
+  { value: 'TikTok', label: 'TikTok', icon: 'musical-notes-outline' },
+  { value: 'Google', label: 'Google', icon: 'search-outline' },
+  { value: 'Другое', label: 'Другое', icon: 'sparkles-outline' },
 ] as const;
 
 export default function Quiz8Screen() {

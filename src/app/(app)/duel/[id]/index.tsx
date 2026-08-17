@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,8 +19,13 @@ function SideCard({ side }: { side: ChallengeSide }) {
       </View>
       <ThemedText type="label">{side.name}</ThemedText>
       <View style={[styles.reportBadge, side.reportedToday && styles.reportBadgeDone]}>
+        <Ionicons
+          name={side.reportedToday ? 'checkmark-circle-outline' : 'ellipse-outline'}
+          size={13}
+          color={side.reportedToday ? Colors.teal : Colors.textSecondary}
+        />
         <ThemedText type="small" color={side.reportedToday ? 'teal' : 'textSecondary'}>
-          {side.reportedToday ? '✅ отчитался(-ась)' : '◻️ ещё нет'}
+          {side.reportedToday ? 'отчитался(-ась)' : 'ещё нет'}
         </ThemedText>
       </View>
     </View>
@@ -117,6 +123,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   reportBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.half,
     paddingHorizontal: Spacing.two,
     paddingVertical: Spacing.half,
     borderRadius: Radius.pill,

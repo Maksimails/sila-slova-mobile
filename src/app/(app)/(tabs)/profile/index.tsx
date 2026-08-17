@@ -1,18 +1,15 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { BetGridTile } from '@/components/bet-grid-tile';
-import { StatCard } from '@/components/stat-card';
+import { BetCircle } from '@/components/bet-circle';
 import { StatusPill } from '@/components/status-pill';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, Radius, Spacing } from '@/constants/theme';
+import { Colors, Gradients, Radius, Spacing } from '@/constants/theme';
 import { MOCK_BETS, MOCK_FOLLOWERS, MOCK_FOLLOWING, MOCK_REPORTS } from '@/lib/mock-data';
-
-const GRID_COLUMNS = 3;
-const GRID_GAP = Spacing.half;
 
 const MOCK_PROFILE = {
   name: 'Максим',
@@ -29,21 +26,18 @@ const MOCK_PROFILE = {
 
 const TYPE_LABELS = { result: 'Результат', habit: 'Привычка', quit: 'Аскеза' } as const;
 
+const QUICK_STATS = (p: typeof MOCK_PROFILE) => [
+  { label: `Доверие ${p.trustLevel}%`, gradient: 'orange' as const },
+  { label: `Драйв ${p.driveLevel}/5`, gradient: 'teal' as const },
+  { label: `Серия ${p.currentStreak}`, gradient: 'purple' as const },
+];
+
 export default function ProfileScreen() {
   const p = MOCK_PROFILE;
-  const [gridWidth, setGridWidth] = useState(0);
-  const onGridLayout = (e: LayoutChangeEvent) => {
-    const w = e.nativeEvent.layout.width;
-    if (w > 0 && w !== gridWidth) setGridWidth(w);
-  };
-  const tileSize = gridWidth > 0 ? (gridWidth - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS : 0;
 
   const finishedBets = MOCK_BETS.filter((b) => b.status === 'done' || b.status === 'failed').sort(
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
   );
-  const craziestBet = [...MOCK_BETS]
-    .filter((b) => b.status === 'done')
-    .sort((a, b) => b.stake * b.durationDays - a.stake * a.durationDays)[0];
 
   const betsWithReports = MOCK_BETS.filter((bet) => MOCK_REPORTS.some((r) => r.betId === bet.id)).sort(
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
@@ -52,17 +46,52 @@ export default function ProfileScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <View style={styles.topBar}>
+            <ThemedText type="title">Профиль</ThemedText>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => router.push('/settings/account')}
+              style={styles.gearButton}
+            >
+              <Ionicons name="settings-outline" size={20} color={Colors.text} />
+            </Pressable>
+          </View>
+
           <View style={styles.header}>
-            <View style={styles.avatarPlaceholder}>
-              <ThemedText type="title" color="gold">
+            <LinearGradient
+              colors={Gradients.orange}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.avatar}
+            >
+              <ThemedText type="display" color="bg">
                 {p.name.slice(0, 1)}
               </ThemedText>
-            </View>
+            </LinearGradient>
             <ThemedText type="title">{p.name}</ThemedText>
-            <ThemedText type="small" color="textSecondary">
-              Уровень {p.level} · {p.xp} / {p.xpForNextLevel} XP
-            </ThemedText>
+            <View style={styles.levelRow}>
+              <Ionicons name="flash-outline" size={14} color={Colors.textSecondary} />
+              <ThemedText type="small" color="textSecondary">
+                Уровень {p.level} · {p.xp} / {p.xpForNextLevel} XP
+              </ThemedText>
+            </View>
+          </View>
+
+          <View style={styles.pillRow}>
+            {QUICK_STATS(p).map((stat) => (
+              <LinearGradient
+                key={stat.label}
+                colors={Gradients[stat.gradient]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.pill}
+              >
+                <ThemedText type="small" color="bg">
+                  {stat.label}
+                </ThemedText>
+              </LinearGradient>
+            ))}
           </View>
 
           <View style={styles.followRow}>
@@ -87,56 +116,34 @@ export default function ProfileScreen() {
             <View style={styles.followStat}>
               <ThemedText type="title">{finishedBets.length}</ThemedText>
               <ThemedText type="small" color="textSecondary">
-                Ставок завершено
+                Завершено
               </ThemedText>
             </View>
           </View>
 
-          <View style={styles.statsGrid}>
-            <StatCard label="Доверие" value={`${p.trustLevel}%`} progress={p.trustLevel / 100} />
-            <StatCard label="Драйв" value={`${p.driveLevel}/5`} progress={p.driveLevel / 5} />
-          </View>
-          <View style={styles.statsGrid}>
-            <StatCard label="Лучшая серия" value={String(p.bestStreak)} />
-            <StatCard label="Текущая серия" value={String(p.currentStreak)} />
-          </View>
-
-          {craziestBet ? (
-            <Pressable onPress={() => router.push(`/bet/${craziestBet.id}`)} style={styles.crazyCard}>
-              <ThemedText type="label" color="crimson">
-                🔥 Самая безумная ставка
-              </ThemedText>
-              <ThemedText type="subtitle" style={styles.crazyGoal}>
-                {craziestBet.goal}
-              </ThemedText>
-              <ThemedText type="small" color="textSecondary">
-                {TYPE_LABELS[craziestBet.type]} · {craziestBet.durationDays} дн. · {craziestBet.stake} ₽
-              </ThemedText>
-            </Pressable>
-          ) : null}
-
           {betsWithReports.length > 0 ? (
             <View style={styles.section}>
               <ThemedText type="label" color="textSecondary">
-                Ставки
+                Мои ставки
               </ThemedText>
-              <View style={styles.grid} onLayout={onGridLayout}>
-                {tileSize > 0
-                  ? betsWithReports.map((bet) => {
-                      const betReports = MOCK_REPORTS.filter((r) => r.betId === bet.id);
-                      const cover = [...betReports].reverse().find((r) => r.mediaUrl)?.mediaUrl;
-                      return (
-                        <BetGridTile
-                          key={bet.id}
-                          bet={bet}
-                          coverUrl={cover}
-                          size={tileSize}
-                          onPress={() => router.push(`/bet/${bet.id}`)}
-                        />
-                      );
-                    })
-                  : null}
-              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.circleRow}
+              >
+                {betsWithReports.map((bet) => {
+                  const betReports = MOCK_REPORTS.filter((r) => r.betId === bet.id);
+                  const cover = [...betReports].reverse().find((r) => r.mediaUrl)?.mediaUrl;
+                  return (
+                    <BetCircle
+                      key={bet.id}
+                      bet={bet}
+                      coverUrl={cover}
+                      onPress={() => router.push(`/bet/${bet.id}`)}
+                    />
+                  );
+                })}
+              </ScrollView>
             </View>
           ) : null}
 
@@ -145,10 +152,12 @@ export default function ProfileScreen() {
               <ThemedText type="label" color="textSecondary">
                 История
               </ThemedText>
-              <Pressable onPress={() => router.push('/profile/history')}>
-                <ThemedText type="small" color="gold">
-                  Смотреть всё
-                </ThemedText>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => router.push('/profile/history')}
+                style={styles.arrowButton}
+              >
+                <Ionicons name="arrow-forward" size={16} color="#ffffff" />
               </Pressable>
             </View>
             {finishedBets.slice(0, 3).map((bet) => (
@@ -165,28 +174,34 @@ export default function ProfileScreen() {
           </View>
 
           <Pressable onPress={() => router.push('/profile/medals')} style={styles.linkRow}>
-            <ThemedText type="body">🏅 Медали</ThemedText>
+            <View style={styles.linkLabel}>
+              <Ionicons name="medal-outline" size={20} color={Colors.text} />
+              <ThemedText type="body">Медали</ThemedText>
+            </View>
             <ThemedText type="small" color="textSecondary">
               {p.medalsCount} получено · +{p.hiddenMedalsCount} скрытых
             </ThemedText>
           </Pressable>
           <Pressable onPress={() => router.push('/profile/bonds')} style={styles.linkRow}>
-            <ThemedText type="body">🤝 Бонды с персонажами</ThemedText>
-            <ThemedText type="small" color="textSecondary">
-              →
-            </ThemedText>
+            <View style={styles.linkLabel}>
+              <Ionicons name="people-circle-outline" size={20} color={Colors.text} />
+              <ThemedText type="body">Бонды с персонажами</ThemedText>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />
           </Pressable>
           <Pressable onPress={() => router.push('/settings/account')} style={[styles.linkRow, styles.signOut]}>
-            <ThemedText type="body">⚙️ Настройки и аккаунт</ThemedText>
-            <ThemedText type="small" color="textSecondary">
-              →
-            </ThemedText>
+            <View style={styles.linkLabel}>
+              <Ionicons name="settings-outline" size={20} color={Colors.text} />
+              <ThemedText type="body">Настройки и аккаунт</ThemedText>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />
           </Pressable>
           <Pressable onPress={() => router.push('/dev-menu')} style={styles.linkRow}>
-            <ThemedText type="body">🛠 Все экраны (QA)</ThemedText>
-            <ThemedText type="small" color="textSecondary">
-              →
-            </ThemedText>
+            <View style={styles.linkLabel}>
+              <Ionicons name="construct-outline" size={20} color={Colors.text} />
+              <ThemedText type="body">Все экраны (QA)</ThemedText>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />
           </Pressable>
         </ScrollView>
       </SafeAreaView>
@@ -203,65 +218,80 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
   },
   scrollContent: {
-    paddingTop: Spacing.four,
+    paddingTop: Spacing.two,
     paddingBottom: Spacing.six,
     gap: Spacing.three,
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  gearButton: {
+    width: 40,
+    height: 40,
+    borderRadius: Radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.bgElement,
   },
   header: {
     alignItems: 'center',
     gap: Spacing.one,
     marginBottom: Spacing.two,
   },
-  avatarPlaceholder: {
-    width: 88,
-    height: 88,
+  levelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
+  },
+  avatar: {
+    width: 96,
+    height: 96,
     borderRadius: Radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Colors.line,
     marginBottom: Spacing.two,
+  },
+  pillRow: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+  },
+  pill: {
+    flex: 1,
+    borderRadius: Radius.pill,
+    paddingVertical: Spacing.two,
+    alignItems: 'center',
   },
   followRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    borderRadius: Radius.large,
-    borderWidth: 1,
-    borderColor: Colors.line,
-    backgroundColor: Colors.bgElement,
     paddingVertical: Spacing.three,
   },
   followStat: {
     alignItems: 'center',
     gap: 2,
   },
-  statsGrid: {
-    flexDirection: 'row',
-    gap: Spacing.two,
-  },
-  crazyCard: {
-    borderRadius: Radius.large,
-    borderWidth: 1,
-    borderColor: Colors.crimson,
-    backgroundColor: 'rgba(225,75,63,0.08)',
-    padding: Spacing.four,
-    gap: Spacing.one,
-  },
-  crazyGoal: {
-    marginTop: 2,
-  },
   section: {
     gap: Spacing.two,
   },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: GRID_GAP,
+  circleRow: {
+    gap: Spacing.three,
+    paddingVertical: Spacing.one,
+    paddingRight: Spacing.three,
   },
   sectionHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  arrowButton: {
+    width: 32,
+    height: 32,
+    borderRadius: Radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.gold,
   },
   historyRow: {
     flexDirection: 'row',
@@ -287,6 +317,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.line,
     backgroundColor: Colors.bgElement,
     padding: Spacing.three,
+  },
+  linkLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
   },
   signOut: {
     marginTop: Spacing.three,

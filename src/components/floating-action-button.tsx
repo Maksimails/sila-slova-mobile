@@ -1,9 +1,10 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Platform, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
-import { Colors, Radius } from '@/constants/theme';
+import { Gradients, Radius } from '@/constants/theme';
 
 export function FloatingActionButton() {
   const insets = useSafeAreaInsets();
@@ -12,41 +13,39 @@ export function FloatingActionButton() {
       accessibilityRole="button"
       accessibilityLabel="Дать слово"
       onPress={() => router.push('/new-bet/kind')}
-      style={({ pressed }) => [styles.fab, { top: insets.top + 12 }, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.pressableBase, { top: insets.top + 12 }, pressed && styles.pressed]}
     >
-      <ThemedText type="title" color="bg" style={styles.plus}>
-        +
-      </ThemedText>
+      <LinearGradient colors={Gradients.red} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.fab}>
+        <Ionicons name="add" size={28} color="#ffffff" />
+      </LinearGradient>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  fab: {
+  pressableBase: {
     position: 'absolute',
     right: 20,
-    width: 58,
-    height: 58,
     borderRadius: Radius.pill,
-    backgroundColor: Colors.text,
-    alignItems: 'center',
-    justifyContent: 'center',
     ...Platform.select({
-      web: { boxShadow: '0 8px 20px rgba(17,17,19,0.28)' },
+      web: { boxShadow: '0 8px 20px rgba(122,14,14,0.35)' },
       default: {
-        shadowColor: '#000',
+        shadowColor: '#7A0E0E',
         shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.28,
+        shadowOpacity: 0.35,
         shadowRadius: 12,
         elevation: 8,
       },
     }),
   },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: Radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   pressed: {
     opacity: 0.85,
-  },
-  plus: {
-    lineHeight: 30,
-    marginTop: -2,
   },
 });

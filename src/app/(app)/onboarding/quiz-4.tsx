@@ -4,10 +4,10 @@ import { QuizStep } from '@/components/quiz-step';
 import { useOnboarding } from '@/lib/onboarding-context';
 
 const OPTIONS = [
-  { value: 'always', label: 'Только если кто-то в курсе и спросит' },
-  { value: 'often', label: 'Дедлайн или чужие ожидания' },
-  { value: 'sometimes', label: 'Иногда сам(-а), иногда нужен пинок' },
-  { value: 'never', label: 'Своей головы хватает' },
+  { value: 'always', label: 'Только если кто-то в курсе и спросит', icon: 'eye-outline' },
+  { value: 'often', label: 'Дедлайн или чужие ожидания', icon: 'alarm-outline' },
+  { value: 'sometimes', label: 'Иногда сам(-а), иногда нужен пинок', icon: 'hand-left-outline' },
+  { value: 'never', label: 'Своей головы хватает', icon: 'bulb-outline' },
 ] as const;
 
 export default function Quiz4Screen() {

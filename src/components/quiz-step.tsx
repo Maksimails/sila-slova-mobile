@@ -1,15 +1,17 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { OptionCard } from '@/components/option-card';
+import { GradientTile } from '@/components/gradient-tile';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, Spacing } from '@/constants/theme';
+import { Colors, GradientOrder, Spacing } from '@/constants/theme';
 
 type QuizOption<T extends string> = {
   value: T;
   label: string;
+  icon?: keyof typeof Ionicons.glyphMap;
 };
 
 type QuizStepProps<T extends string> = {
@@ -34,30 +36,32 @@ export function QuizStep<T extends string>({
   onSkip,
 }: QuizStepProps<T>) {
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView bg="screenDark" style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <Pressable accessibilityRole="button" onPress={() => router.back()}>
-            <ThemedText type="subtitle">‹</ThemedText>
+            <Ionicons name="chevron-back" size={22} color="#ffffff" />
           </Pressable>
           <View style={styles.track}>
             <View style={[styles.fill, { width: `${(step / total) * 100}%` }]} />
           </View>
         </View>
 
-        <ThemedText type="small" color="textSecondary" style={styles.stepLabel}>
+        <ThemedText type="small" color="textOnDark" style={styles.stepLabel}>
           Вопрос {step} из {total}
         </ThemedText>
-        <ThemedText type="title" style={styles.title}>
+        <ThemedText type="title" color="bg" style={styles.title}>
           {title}
         </ThemedText>
 
         <View style={styles.options}>
           {options.map((option, index) => (
-            <OptionCard
+            <GradientTile
               key={option.value}
+              gradient={GradientOrder[index % GradientOrder.length]}
               number={index + 1}
-              title={option.label}
+              icon={option.icon}
+              label={option.label}
               selected={selected === option.value}
               onPress={() => {
                 onSelect(option.value);
@@ -68,7 +72,7 @@ export function QuizStep<T extends string>({
         </View>
 
         <Pressable accessibilityRole="button" onPress={onSkip} style={styles.skip}>
-          <ThemedText type="small" color="textSecondary">
+          <ThemedText type="small" color="textOnDark">
             Пропустить вопрос
           </ThemedText>
         </Pressable>
@@ -94,7 +98,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 4,
     borderRadius: 2,
-    backgroundColor: Colors.line,
+    backgroundColor: 'rgba(255,255,255,0.15)',
     overflow: 'hidden',
   },
   fill: {
@@ -106,13 +110,13 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: Spacing.one,
-    marginBottom: Spacing.four,
+    marginBottom: Spacing.five,
   },
   options: {
-    gap: Spacing.two,
+    gap: Spacing.four,
   },
   skip: {
-    marginTop: Spacing.four,
+    marginTop: Spacing.five,
     alignSelf: 'center',
   },
 });
