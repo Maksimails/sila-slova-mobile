@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Image, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/button';
@@ -147,11 +147,19 @@ const styles = StyleSheet.create({
   },
   reportRow: {
     borderRadius: Radius.medium,
-    borderWidth: 1,
-    borderColor: Colors.line,
     backgroundColor: Colors.bgElement,
     padding: Spacing.three,
     gap: Spacing.two,
+    ...Platform.select({
+      web: { boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+      default: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 2,
+      },
+    }),
   },
   reportRowHeader: {
     flexDirection: 'row',

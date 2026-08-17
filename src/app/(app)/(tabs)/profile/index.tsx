@@ -49,12 +49,10 @@ export default function ProfileScreen() {
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={styles.topBar}>
             <ThemedText type="title">Профиль</ThemedText>
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => router.push('/settings/account')}
-              style={styles.gearButton}
-            >
-              <Ionicons name="settings-outline" size={20} color={Colors.text} />
+            <Pressable accessibilityRole="button" onPress={() => router.push('/settings/account')}>
+              <LinearGradient colors={Gradients.blue} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.gearButton}>
+                <Ionicons name="settings-outline" size={20} color="#ffffff" />
+              </LinearGradient>
             </Pressable>
           </View>
 
@@ -175,7 +173,9 @@ export default function ProfileScreen() {
 
           <Pressable onPress={() => router.push('/profile/medals')} style={styles.linkRow}>
             <View style={styles.linkLabel}>
-              <Ionicons name="medal-outline" size={20} color={Colors.text} />
+              <LinearGradient colors={Gradients.gold} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.linkIcon}>
+                <Ionicons name="medal-outline" size={18} color="#ffffff" />
+              </LinearGradient>
               <ThemedText type="body">Медали</ThemedText>
             </View>
             <ThemedText type="small" color="textSecondary">
@@ -184,21 +184,27 @@ export default function ProfileScreen() {
           </Pressable>
           <Pressable onPress={() => router.push('/profile/bonds')} style={styles.linkRow}>
             <View style={styles.linkLabel}>
-              <Ionicons name="people-circle-outline" size={20} color={Colors.text} />
+              <LinearGradient colors={Gradients.purple} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.linkIcon}>
+                <Ionicons name="people-circle-outline" size={18} color="#ffffff" />
+              </LinearGradient>
               <ThemedText type="body">Бонды с персонажами</ThemedText>
             </View>
             <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />
           </Pressable>
           <Pressable onPress={() => router.push('/settings/account')} style={[styles.linkRow, styles.signOut]}>
             <View style={styles.linkLabel}>
-              <Ionicons name="settings-outline" size={20} color={Colors.text} />
+              <LinearGradient colors={Gradients.blue} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.linkIcon}>
+                <Ionicons name="settings-outline" size={18} color="#ffffff" />
+              </LinearGradient>
               <ThemedText type="body">Настройки и аккаунт</ThemedText>
             </View>
             <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />
           </Pressable>
           <Pressable onPress={() => router.push('/dev-menu')} style={styles.linkRow}>
             <View style={styles.linkLabel}>
-              <Ionicons name="construct-outline" size={20} color={Colors.text} />
+              <LinearGradient colors={Gradients.teal} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.linkIcon}>
+                <Ionicons name="construct-outline" size={18} color="#ffffff" />
+              </LinearGradient>
               <ThemedText type="body">Все экраны (QA)</ThemedText>
             </View>
             <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />
@@ -322,6 +328,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
+  },
+  linkIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: Radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   signOut: {
     marginTop: Spacing.three,

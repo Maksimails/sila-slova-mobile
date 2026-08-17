@@ -1,14 +1,18 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, Radius, Spacing } from '@/constants/theme';
+import { Colors, Gradients, Radius, Spacing, type GradientName } from '@/constants/theme';
 import { MOCK_OPEN_CHALLENGES, MOCK_PEOPLE } from '@/lib/mock-data';
 
+type BetType = 'result' | 'habit' | 'quit';
+
 const TYPE_LABELS = { result: 'Результат', habit: 'Привычка', quit: 'Аскеза' } as const;
+const TYPE_GRADIENT: Record<BetType, GradientName> = { result: 'gold', habit: 'teal', quit: 'red' };
 
 export default function DiscoverScreen() {
   return (
@@ -27,36 +31,50 @@ export default function DiscoverScreen() {
           contentContainerStyle={styles.list}
           renderItem={({ item }) => {
             const creator = MOCK_PEOPLE.find((p) => p.id === item.creatorId);
+            const gradient = TYPE_GRADIENT[item.type];
             return (
               <Pressable
                 onPress={() => router.push({ pathname: '/challenge/[token]', params: { token: String(item.id) } })}
-                style={styles.card}
+                style={styles.cardWrap}
               >
-                <View style={styles.cardHeader}>
-                  <ThemedText type="label" color="textSecondary">
-                    {TYPE_LABELS[item.type]} · {item.durationDays} дн.
-                  </ThemedText>
-                  {item.stake > 0 ? (
-                    <ThemedText type="small" color="gold">
-                      {item.stake} ₽
+                <LinearGradient
+                  colors={Gradients[gradient]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={styles.accent}
+                />
+                <View style={styles.card}>
+                  <View style={styles.cardHeader}>
+                    <ThemedText type="label" color="textSecondary">
+                      {TYPE_LABELS[item.type]} · {item.durationDays} дн.
                     </ThemedText>
-                  ) : null}
-                </View>
-                <ThemedText type="subtitle" style={styles.goal}>
-                  {item.goal}
-                </ThemedText>
-                <View style={styles.cardFooter}>
-                  <View style={styles.creatorRow}>
-                    <View style={styles.avatar}>
+                    {item.stake > 0 ? (
                       <ThemedText type="small" color="gold">
-                        {creator?.name.slice(0, 1)}
+                        {item.stake} ₽
+                      </ThemedText>
+                    ) : null}
+                  </View>
+                  <ThemedText type="subtitle" style={styles.goal}>
+                    {item.goal}
+                  </ThemedText>
+                  <View style={styles.cardFooter}>
+                    <View style={styles.creatorRow}>
+                      <LinearGradient
+                        colors={Gradients[gradient]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.avatar}
+                      >
+                        <ThemedText type="small" color="bg">
+                          {creator?.name.slice(0, 1)}
+                        </ThemedText>
+                      </LinearGradient>
+                      <ThemedText type="small" color="textSecondary">
+                        {creator?.name} ищет соперника
                       </ThemedText>
                     </View>
-                    <ThemedText type="small" color="textSecondary">
-                      {creator?.name} ищет соперника
-                    </ThemedText>
+                    <Button title="Принять" style={styles.joinButton} />
                   </View>
-                  <Button title="Принять" style={styles.joinButton} />
                 </View>
               </Pressable>
             );
@@ -91,11 +109,27 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
     paddingBottom: Spacing.six,
   },
-  card: {
+  cardWrap: {
+    flexDirection: 'row',
     borderRadius: Radius.large,
-    borderWidth: 1,
-    borderColor: Colors.line,
+    overflow: 'hidden',
     backgroundColor: Colors.bgElement,
+    ...Platform.select({
+      web: { boxShadow: '0 2px 8px rgba(0,0,0,0.08)' },
+      default: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 3,
+      },
+    }),
+  },
+  accent: {
+    width: 6,
+  },
+  card: {
+    flex: 1,
     padding: Spacing.four,
     gap: Spacing.two,
   },
@@ -125,8 +159,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Colors.line,
   },
   joinButton: {
     height: 40,

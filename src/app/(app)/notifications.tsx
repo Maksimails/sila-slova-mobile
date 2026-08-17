@@ -1,11 +1,12 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { FlatList, Pressable, StyleSheet } from 'react-native';
+import { FlatList, Platform, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, Radius, Spacing } from '@/constants/theme';
+import { Colors, Gradients, Radius, Spacing, type GradientName } from '@/constants/theme';
 
 type NotificationType = 'comment' | 'opponent_report' | 'challenge_activated' | 'challenge_accepted' | 'challenge_declined';
 
@@ -21,6 +22,14 @@ const ICONS: Record<NotificationType, keyof typeof Ionicons.glyphMap> = {
   challenge_activated: 'flame-outline',
   challenge_accepted: 'checkmark-circle-outline',
   challenge_declined: 'close-circle-outline',
+};
+
+const GRADIENTS: Record<NotificationType, GradientName> = {
+  comment: 'blue',
+  opponent_report: 'gold',
+  challenge_activated: 'red',
+  challenge_accepted: 'teal',
+  challenge_declined: 'purple',
 };
 
 export default function NotificationsScreen() {
@@ -39,7 +48,14 @@ export default function NotificationsScreen() {
               onPress={() => (item.betId ? router.push(`/bet/${item.betId}`) : undefined)}
               style={[styles.row, !item.isRead && styles.rowUnread]}
             >
-              <Ionicons name={ICONS[item.type]} size={22} color={Colors.text} />
+              <LinearGradient
+                colors={Gradients[GRADIENTS[item.type]]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.iconChip}
+              >
+                <Ionicons name={ICONS[item.type]} size={18} color="#ffffff" />
+              </LinearGradient>
               <ThemedText type="body" style={styles.message}>
                 {item.message}
               </ThemedText>
@@ -74,15 +90,31 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     gap: Spacing.three,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     borderRadius: Radius.medium,
-    borderWidth: 1,
-    borderColor: Colors.line,
     backgroundColor: Colors.bgElement,
     padding: Spacing.three,
+    ...Platform.select({
+      web: { boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+      default: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 2,
+      },
+    }),
   },
   rowUnread: {
+    borderWidth: 1,
     borderColor: Colors.gold,
+  },
+  iconChip: {
+    width: 36,
+    height: 36,
+    borderRadius: Radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   message: {
     flex: 1,

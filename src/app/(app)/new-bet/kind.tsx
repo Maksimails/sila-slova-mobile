@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 
-import { OptionCard } from '@/components/option-card';
+import { GradientTile } from '@/components/gradient-tile';
 import { WizardScreen } from '@/components/wizard-screen';
 import { type BetKind, useBetWizard } from '@/lib/bet-wizard-context';
 
@@ -16,15 +16,19 @@ export default function KindScreen() {
   };
 
   return (
-    <WizardScreen title="Соло или вызов?" onNext={handleNext} nextDisabled={!draft.kind}>
-      <OptionCard
-        title="Соло"
+    <WizardScreen title="Соло или вызов?" onNext={handleNext} nextDisabled={!draft.kind} variant="dark">
+      <GradientTile
+        gradient="teal"
+        icon="person-outline"
+        label="Соло"
         description="Только ты и твоё слово."
         selected={draft.kind === 'solo'}
         onPress={() => choose('solo')}
       />
-      <OptionCard
-        title="Вызов"
+      <GradientTile
+        gradient="purple"
+        icon="people-outline"
+        label="Вызов"
         description="Позови конкретного человека — оба дают слово, оба отчитываются."
         selected={draft.kind === 'challenge'}
         onPress={() => choose('challenge')}

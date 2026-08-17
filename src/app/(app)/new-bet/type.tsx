@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 
-import { OptionCard } from '@/components/option-card';
+import { GradientTile } from '@/components/gradient-tile';
 import { WizardScreen } from '@/components/wizard-screen';
 import { type BetType, useBetWizard } from '@/lib/bet-wizard-context';
 
@@ -16,22 +16,28 @@ export default function TypeScreen() {
   };
 
   return (
-    <WizardScreen title="Какой тип ставки?" onNext={handleNext} nextDisabled={!draft.type}>
-      <OptionCard
-        title="Результат"
+    <WizardScreen title="Какой тип ставки?" onNext={handleNext} nextDisabled={!draft.type} variant="dark">
+      <GradientTile
+        gradient="gold"
+        icon="flag-outline"
+        label="Результат"
         description="Дойти до конкретной цели к дедлайну."
         selected={draft.type === 'result'}
         onPress={() => choose('result')}
       />
-      <OptionCard
-        title="Привычка"
+      <GradientTile
+        gradient="teal"
+        icon="repeat-outline"
+        label="Привычка"
         description="Повторять каждый день минимум N дней."
         selected={draft.type === 'habit'}
         onPress={() => choose('habit')}
       />
       {!isChallenge && (
-        <OptionCard
-          title="Аскеза"
+        <GradientTile
+          gradient="red"
+          icon="ban-outline"
+          label="Аскеза"
           description="Отказ от чего-то — под контролем свидетеля."
           selected={draft.type === 'quit'}
           onPress={() => choose('quit')}

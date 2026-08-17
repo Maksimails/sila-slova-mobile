@@ -8,6 +8,7 @@ import { Gradients, Radius, Spacing, type GradientName } from '@/constants/theme
 type GradientTileProps = {
   gradient: GradientName;
   label: string;
+  description?: string;
   icon?: keyof typeof Ionicons.glyphMap;
   selected?: boolean;
   onPress: () => void;
@@ -18,7 +19,7 @@ type GradientTileProps = {
 // rotated container so they angle with it for free, no separate transform.
 const TILT = '-5deg';
 
-export function GradientTile({ gradient, label, icon, selected, onPress, number }: GradientTileProps) {
+export function GradientTile({ gradient, label, description, icon, selected, onPress, number }: GradientTileProps) {
   return (
     <Pressable
       accessibilityRole="button"
@@ -30,7 +31,7 @@ export function GradientTile({ gradient, label, icon, selected, onPress, number 
         colors={Gradients[gradient]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={[styles.tile, selected && styles.tileSelected]}
+        style={[styles.tile, selected && styles.tileSelected, description && styles.tileWithDescription]}
       >
         {number !== undefined ? (
           <View style={styles.badge}>
@@ -39,9 +40,20 @@ export function GradientTile({ gradient, label, icon, selected, onPress, number 
             </ThemedText>
           </View>
         ) : null}
-        <ThemedText type="subtitle" color="bg" style={styles.label} numberOfLines={2} adjustsFontSizeToFit>
+        <ThemedText
+          type="subtitle"
+          color="bg"
+          style={[styles.label, description && styles.labelWithDescription]}
+          numberOfLines={2}
+          adjustsFontSizeToFit
+        >
           {label}
         </ThemedText>
+        {description ? (
+          <ThemedText type="small" color="bg" style={styles.description} numberOfLines={3}>
+            {description}
+          </ThemedText>
+        ) : null}
         {icon ? <Ionicons name={icon} size={30} color="#ffffff" style={styles.icon} /> : null}
         {selected ? (
           <View style={styles.check}>
@@ -77,6 +89,10 @@ const styles = StyleSheet.create({
     minHeight: 88,
     justifyContent: 'center',
   },
+  tileWithDescription: {
+    justifyContent: 'flex-start',
+    paddingTop: Spacing.five,
+  },
   tileSelected: {
     borderWidth: 3,
     borderColor: '#ffffff',
@@ -97,6 +113,14 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0,0,0,0.25)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
+  },
+  labelWithDescription: {
+    maxWidth: '100%',
+  },
+  description: {
+    marginTop: Spacing.one,
+    maxWidth: '92%',
+    opacity: 0.92,
   },
   icon: {
     position: 'absolute',

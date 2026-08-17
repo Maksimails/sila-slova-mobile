@@ -14,6 +14,7 @@ type WizardScreenProps = {
   onNext: () => void;
   nextTitle?: string;
   nextDisabled?: boolean;
+  variant?: 'light' | 'dark';
 };
 
 export function WizardScreen({
@@ -23,21 +24,30 @@ export function WizardScreen({
   onNext,
   nextTitle = 'Далее',
   nextDisabled,
+  variant = 'light',
 }: WizardScreenProps) {
+  const isDark = variant === 'dark';
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView bg={isDark ? 'screenDark' : 'bg'} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-          <ThemedText type="title">{title}</ThemedText>
+          <ThemedText type="title" color={isDark ? 'bg' : 'text'}>
+            {title}
+          </ThemedText>
           {subtitle ? (
-            <ThemedText type="body" color="textSecondary" style={styles.subtitle}>
+            <ThemedText type="body" color={isDark ? 'textOnDark' : 'textSecondary'} style={styles.subtitle}>
               {subtitle}
             </ThemedText>
           ) : null}
           <View style={styles.content}>{children}</View>
         </ScrollView>
         <View style={styles.footer}>
-          <Button title={nextTitle} onPress={onNext} disabled={nextDisabled} />
+          <Button
+            title={nextTitle}
+            variant={isDark ? 'inverted' : 'primary'}
+            onPress={onNext}
+            disabled={nextDisabled}
+          />
         </View>
       </SafeAreaView>
     </ThemedView>

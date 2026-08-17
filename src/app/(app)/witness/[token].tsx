@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/button';
@@ -78,11 +78,19 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: Radius.large,
-    borderWidth: 1,
-    borderColor: Colors.line,
     backgroundColor: Colors.bgElement,
     padding: Spacing.four,
     gap: Spacing.two,
+    ...Platform.select({
+      web: { boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+      default: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 2,
+      },
+    }),
   },
   actions: {
     gap: Spacing.two,

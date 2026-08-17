@@ -2,18 +2,18 @@ import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
-import { OptionCard } from '@/components/option-card';
+import { GradientTile } from '@/components/gradient-tile';
 import { ThemedText } from '@/components/themed-text';
 import { WizardScreen } from '@/components/wizard-screen';
-import { Spacing } from '@/constants/theme';
+import { Spacing, type GradientName } from '@/constants/theme';
 import { type HabitTier, type SkipMode, useBetWizard } from '@/lib/bet-wizard-context';
 
 const DURATION_OPTIONS = [21, 40, 100, 365];
 
-const TIERS: { value: HabitTier; title: string; description: string }[] = [
-  { value: 'light', title: 'Лайт', description: 'Можно пропускать до 2 дней в неделю.' },
-  { value: 'normie', title: 'Норм', description: '1 пропуск в месяц.' },
-  { value: 'best_self', title: 'Лучшая Версия Себя', description: 'Ноль пропусков — любой промах проваливает ставку.' },
+const TIERS: { value: HabitTier; title: string; description: string; gradient: GradientName; icon: 'leaf-outline' | 'flash-outline' | 'flame-outline' }[] = [
+  { value: 'light', title: 'Лайт', description: 'Можно пропускать до 2 дней в неделю.', gradient: 'teal', icon: 'leaf-outline' },
+  { value: 'normie', title: 'Норм', description: '1 пропуск в месяц.', gradient: 'gold', icon: 'flash-outline' },
+  { value: 'best_self', title: 'Лучшая Версия Себя', description: 'Ноль пропусков — любой промах проваливает ставку.', gradient: 'red', icon: 'flame-outline' },
 ];
 
 const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
@@ -54,9 +54,9 @@ export default function HabitFieldsScreen() {
   };
 
   return (
-    <WizardScreen title="Срок и уровень" onNext={handleNext} nextDisabled={!canProceed}>
+    <WizardScreen title="Срок и уровень" onNext={handleNext} nextDisabled={!canProceed} variant="dark">
       <View style={styles.section}>
-        <ThemedText type="label" color="textSecondary">
+        <ThemedText type="label" color="textOnDark">
           Срок (минимум 21 день)
         </ThemedText>
         <View style={styles.chipRow}>
@@ -72,13 +72,15 @@ export default function HabitFieldsScreen() {
       </View>
 
       <View style={styles.section}>
-        <ThemedText type="label" color="textSecondary">
+        <ThemedText type="label" color="textOnDark">
           Уровень
         </ThemedText>
         {TIERS.map((tier) => (
-          <OptionCard
+          <GradientTile
             key={tier.value}
-            title={tier.title}
+            gradient={tier.gradient}
+            icon={tier.icon}
+            label={tier.title}
             description={tier.description}
             selected={draft.habitTier === tier.value}
             onPress={() => chooseTier(tier.value)}
@@ -88,17 +90,21 @@ export default function HabitFieldsScreen() {
 
       {needsSkipMode && (
         <View style={styles.section}>
-          <ThemedText type="label" color="textSecondary">
+          <ThemedText type="label" color="textOnDark">
             Режим пропусков
           </ThemedText>
-          <OptionCard
-            title="Заранее"
+          <GradientTile
+            gradient="purple"
+            icon="calendar-outline"
+            label="Заранее"
             description="Выбери день недели, который всегда можно пропустить."
             selected={draft.skipMode === 'predeclared'}
             onPress={() => chooseSkipMode('predeclared')}
           />
-          <OptionCard
-            title="По ситуации"
+          <GradientTile
+            gradient="blue"
+            icon="shuffle-outline"
+            label="По ситуации"
             description="Пропуск засчитывается автоматически, когда случится."
             selected={draft.skipMode === 'flexible'}
             onPress={() => chooseSkipMode('flexible')}
@@ -108,7 +114,7 @@ export default function HabitFieldsScreen() {
 
       {needsWeekdayPicker && (
         <View style={styles.section}>
-          <ThemedText type="label" color="textSecondary">
+          <ThemedText type="label" color="textOnDark">
             Разрешённые дни пропуска
           </ThemedText>
           <View style={styles.chipRow}>
